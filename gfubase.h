@@ -240,6 +240,7 @@ gfu_string_view gfu_sv_slice(gfu_string_view sv, isize offset, isize length);
 
 
 #ifdef GFUBASE_IMPLEMENTATION
+#undef GFUBASE_IMPLEMENTATION
 
 /// ======================================================================= ///
 /// Allocators                                                              ///
