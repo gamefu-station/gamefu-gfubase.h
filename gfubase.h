@@ -1,34 +1,36 @@
-/// ======================================================================= ///
-/// This file is part of the GameFU System project                          ///
-/// ----------------------------------------------------------------------- ///
-/// Copyright (C) 2025  Local Atticus <contact@nashiora.com>                ///
-///                                                                         ///
-/// This software is provided 'as-is', without any express or implied       ///
-/// warranty. In no event will the authors be held liable for any damages   ///
-/// arising from the use of this software.                                  ///
-///                                                                         ///
-/// Permission is granted to anyone to use this software for any purpose,   ///
-/// including commercial applications, and to alter it and redistribute it  ///
-/// freely, subject to the following restrictions:                          ///
-///                                                                         ///
-/// 1. The origin of this software must not be misrepresented; you must not ///
-///    claim that you wrote the original software. If you use this software ///
-///    in a product, an acknowledgment in the product documentation would   ///
-///    be appreciated but is not required.                                  ///
-///                                                                         ///
-/// 2. Altered source versions must be plainly marked as such, and must not ///
-///    be misrepresented as being the original software.                    ///
-///                                                                         ///
-/// 3. This notice may not be removed or altered from any source            ///
-///    distribution.                                                        ///
-/// ======================================================================= ///
+// ============================================================================== //
+// This file is part of the GameFU Station fantasy console project.               //
+//   GFUBASE - GameFU Station Base Library                                        //
+// ------------------------------------------------------------------------------ //
+// MIT License                                                                    //
+//                                                                                //
+// Copyright (c) 2025  L. C. Atticus <contact@nashiora.com>                       //
+//                                                                                //
+// Permission is hereby granted, free of charge, to any person obtaining a copy   //
+// of this software and associated documentation files (the "Software"), to deal  //
+// in the Software without restriction, including without limitation the rights   //
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      //
+// copies of the Software, and to permit persons to whom the Software is          //
+// furnished to do so, subject to the following conditions:                       //
+//                                                                                //
+// The above copyright notice and this permission notice shall be included in all //
+// copies or substantial portions of the Software.                                //
+//                                                                                //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     //
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       //
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    //
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER         //
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  //
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  //
+// SOFTWARE.                                                                      //
+// ============================================================================== //
 
 #ifndef GFUBASE_H_
 #define GFUBASE_H_
 
-/// ======================================================================= ///
-/// Standard headers, for convenience                                       ///
-/// ======================================================================= ///
+// ============================================================================== //
+// Standard headers, for convenience                                              //
+// ============================================================================== //
 
 #include <assert.h>
 #include <inttypes.h>
@@ -43,9 +45,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-/// ======================================================================= ///
-/// Platform and compiler identification                                    ///
-/// ======================================================================= ///
+// ============================================================================== //
+// Platform and compiler identification                                           //
+// ============================================================================== //
 
 #define GFU_WINDOWS 0
 #define GFU_LINUX   0
@@ -79,9 +81,9 @@
 #    define GFU_MSVC 1
 #endif
 
-/// ======================================================================= ///
-/// "Fancy" macros                                                          ///
-/// ======================================================================= ///
+// ============================================================================== //
+// "Fancy" macros                                                                 //
+// ============================================================================== //
 
 #if __STDC_VERSION__ < 202311L || (defined(_MSC_VER) && !defined(__clang__))
 #    define nullptr NULL
@@ -96,9 +98,9 @@
 #define gfu_assert(Cond) assert(Cond)
 #define gfu_assert_message(Cond, Message) assert(Cond && "" Message "")
 
-/// ======================================================================= ///
-/// Primitive types                                                         ///
-/// ======================================================================= ///
+// ============================================================================== //
+// Primitive types                                                                //
+// ============================================================================== //
 
 typedef int8_t i8;
 typedef int16_t i16;
@@ -116,9 +118,9 @@ typedef size_t usize;
 typedef float f32;
 typedef double f64;
 
-/// ======================================================================= ///
-/// Allocators                                                              ///
-/// ======================================================================= ///
+// ============================================================================== //
+// Allocators                                                                     //
+// ============================================================================== //
 
 typedef enum gfu_allocator_action {
     GFU_ALLOC,
@@ -173,9 +175,9 @@ void* gfu_arena_realloc2(gfu_arena* arena, void* memory, isize previous_size, is
 void* gfu_arena_realloc2_aligned(gfu_arena* arena, void* memory, isize previous_size, isize size, isize align);
 void gfu_arena_clear(gfu_arena* arena);
 
-/// ======================================================================= ///
-/// Container types                                                         ///
-/// ======================================================================= ///
+// ============================================================================== //
+// Container types                                                                //
+// ============================================================================== //
 
 #define GFU_DA_INITIAL_CAPACITY 256
 
@@ -204,9 +206,9 @@ void gfu_arena_clear(gfu_arena* arena);
 
 void gfu_dynamic_array_ensure_capacity(gfu_allocator* allocator, isize element_size, void** da_data_ptr, i64* da_capacity_ptr, i64 required_capacity);
 
-/// ======================================================================= ///
-/// String types                                                            ///
-/// ======================================================================= ///
+// ============================================================================== //
+// String types                                                                   //
+// ============================================================================== //
 
 #define GFU_STR_FMT "%.*s"
 #define GFU_STR_ARG(Str) (int)(Str).count, (Str).data
@@ -240,9 +242,9 @@ gfu_string_view gfu_sv_slice(gfu_string_view sv, isize offset, isize length);
 
 #ifdef GFUBASE_IMPLEMENTATION
 
-/// ======================================================================= ///
-/// Allocators                                                              ///
-/// ======================================================================= ///
+// ============================================================================== //
+// Allocators                                                                     //
+// ============================================================================== //
 
 static void* gfu_allocator_default_function(void* userdata, gfu_allocator_action alloc_action, void* memory, isize size, isize previous_size, isize align);
 
@@ -262,13 +264,13 @@ gfu_allocator gfu_allocator_temp = {
 isize gfu_align_for_bytes(isize byte_count) {
     byte_count &= 0x7FFF;
 
-    /// https://graphics.stanford.edu/%7Eseander/bithacks.html#RoundUpPowerOf2
-    ///
-    /// Devised by
-    ///   - Sean Anderson, Sepember 14, 2001
-    ///   - Peter Hart and William Lewis, February 14, 1997
-    ///
-    /// Computes the next power of two >= 'bytes'.
+          // https://graphics.stanford.edu/%7Eseander/bithacks.html#RoundUpPowerOf2
+           //
+          // Devised by
+          //   - Sean Anderson, Sepember 14, 2001
+          //   - Peter Hart and William Lewis, February 14, 1997
+           //
+          // Computes the next power of two >= 'bytes'.
     isize align = byte_count - 1;
     align |= align >> 1;
     align |= align >> 2;
@@ -492,9 +494,9 @@ static void* gfu_allocator_temp_function(void* userdata, gfu_allocator_action al
     }
 }
 
-/// ======================================================================= ///
-/// Container types                                                         ///
-/// ======================================================================= ///
+// ============================================================================== //
+// Container types                                                                //
+// ============================================================================== //
 
 void gfu_dynamic_array_ensure_capacity(gfu_allocator* allocator, isize element_size, void** da_data_ptr, isize* da_capacity_ptr, isize required_capacity) {
     if (*da_capacity_ptr >= required_capacity) {
@@ -519,9 +521,9 @@ void gfu_dynamic_array_ensure_capacity(gfu_allocator* allocator, isize element_s
     }
 }
 
-/// ======================================================================= ///
-/// String types                                                            ///
-/// ======================================================================= ///
+// ============================================================================== //
+// String types                                                                   //
+// ============================================================================== //
 
 isize gfu_cstrlen(const char* cstr) {
     isize length = 0;
