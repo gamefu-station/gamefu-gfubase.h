@@ -555,7 +555,7 @@ isize gfu_string_append_sv(gfu_string* str, gfu_string_view sv) {
 isize gfu_string_sprintf(gfu_string* str, const char* format, ...) {
     va_list v;
     va_start(v, format);
-    isize result_count = gfu_string_appendvf(str, format, v);
+    isize result_count = gfu_string_vsprintf(str, format, v);
     va_end(v);
     return result_count;
 }
