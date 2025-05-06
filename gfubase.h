@@ -292,7 +292,7 @@ void* gfu_alloc(gfu_allocator* allocator, isize size) {
         allocator = &gfu_allocator_default;
     }
 
-    return allocator->allocator_function(allocator->userdata, GFU_ALLOC, nullptr, 0, size, 16);
+    return allocator->allocator_function(allocator->userdata, GFU_ALLOC, nullptr, size, 0, 16);
 }
 
 void* gfu_alloc_aligned(gfu_allocator* allocator, isize size, isize align) {
@@ -300,7 +300,7 @@ void* gfu_alloc_aligned(gfu_allocator* allocator, isize size, isize align) {
         allocator = &gfu_allocator_default;
     }
 
-    return allocator->allocator_function(allocator->userdata, GFU_ALLOC, nullptr, 0, size, align);
+    return allocator->allocator_function(allocator->userdata, GFU_ALLOC, nullptr, size, 0, align);
 }
 
 void* gfu_realloc(gfu_allocator* allocator, void* memory, isize size) {
@@ -308,7 +308,7 @@ void* gfu_realloc(gfu_allocator* allocator, void* memory, isize size) {
         allocator = &gfu_allocator_default;
     }
 
-    return allocator->allocator_function(allocator->userdata, GFU_REALLOC, memory, 0, size, 16);
+    return allocator->allocator_function(allocator->userdata, GFU_REALLOC, memory, size, 0, 16);
 }
 
 void* gfu_realloc_aligned(gfu_allocator* allocator, void* memory, isize size, isize align) {
@@ -316,7 +316,7 @@ void* gfu_realloc_aligned(gfu_allocator* allocator, void* memory, isize size, is
         allocator = &gfu_allocator_default;
     }
 
-    return allocator->allocator_function(allocator->userdata, GFU_REALLOC, memory, 0, size, align);
+    return allocator->allocator_function(allocator->userdata, GFU_REALLOC, memory, size, 0, align);
 }
 
 void* gfu_realloc2(gfu_allocator* allocator, void* memory, isize previous_size, isize size) {
@@ -324,7 +324,7 @@ void* gfu_realloc2(gfu_allocator* allocator, void* memory, isize previous_size, 
         allocator = &gfu_allocator_default;
     }
 
-    return allocator->allocator_function(allocator->userdata, GFU_REALLOC2, memory, previous_size, size, 16);
+    return allocator->allocator_function(allocator->userdata, GFU_REALLOC2, memory, size, previous_size, 16);
 }
 
 void* gfu_realloc2_aligned(gfu_allocator* allocator, void* memory, isize previous_size, isize size, isize align) {
@@ -332,7 +332,7 @@ void* gfu_realloc2_aligned(gfu_allocator* allocator, void* memory, isize previou
         allocator = &gfu_allocator_default;
     }
 
-    return allocator->allocator_function(allocator->userdata, GFU_REALLOC2, memory, previous_size, size, align);
+    return allocator->allocator_function(allocator->userdata, GFU_REALLOC2, memory, size, previous_size, align);
 }
 
 void gfu_dealloc(gfu_allocator* allocator, void* memory) {
@@ -500,26 +500,21 @@ static void* gfu_allocator_temp_function(void* userdata, gfu_allocator_action al
 /// ======================================================================= ///
 
 void gfu_dynamic_array_ensure_capacity(gfu_allocator* allocator, isize element_size, void** da_data_ptr, isize* da_capacity_ptr, isize required_capacity) {
+    gfu_assert(element_size > 0);
     if (*da_capacity_ptr >= required_capacity) {
         return;
     }
 
-    if (*da_data_ptr == nullptr || *da_capacity_ptr == 0) {
-        *da_capacity_ptr = GFU_DA_INITIAL_CAPACITY;
-        *da_data_ptr = gfu_alloc(allocator, GFU_DA_INITIAL_CAPACITY * element_size);
-    } else {
-        isize old_capacity = *da_capacity_ptr;
+    isize old_capacity = *da_capacity_ptr;
+    isize new_capacity = *da_capacity_ptr;
 
-        isize new_capacity = *da_capacity_ptr;
-        while (new_capacity < required_capacity) {
-            new_capacity *= 2;
-        }
+    if (new_capacity == 0) new_capacity = GFU_DA_INITIAL_CAPACITY;
+    while (new_capacity < required_capacity) new_capacity *= 2;
 
-        gfu_assert(new_capacity > 0);
+    gfu_assert(new_capacity > 0);
 
-        *da_capacity_ptr = new_capacity;
-        *da_data_ptr = gfu_realloc2(allocator, *da_data_ptr, old_capacity * element_size, new_capacity * element_size);
-    }
+    *da_capacity_ptr = new_capacity;
+    *da_data_ptr = gfu_realloc2(allocator, *da_data_ptr, old_capacity * element_size, new_capacity * element_size);
 }
 
 /// ======================================================================= ///
@@ -574,7 +569,7 @@ isize gfu_string_vsprintf(gfu_string* str, const char* format, va_list v) {
 
     va_list v1;
     va_copy(v1, v);
-    isize append_count = vsnprintf(str->data + str->count, check_append_count + 1, format, v1);
+    isize append_count = vsnprintf(str->data + str->count, gfu_cast(usize) check_append_count + 1, format, v1);
     gfu_assert(append_count == check_append_count);
     va_end(v1);
 
