@@ -448,6 +448,7 @@ void gfu_arena_clear(gfu_arena* arena) {
 static void* gfu_allocator_default_function(void* userdata, gfu_allocator_action alloc_action, void* memory, isize size, isize previous_size, isize align) {
     // TODO(local): Aligned allocation in the "default" libc allocator, if possible.
     switch (alloc_action) {
+        default: gfu_assert_message(false, "Unsupported allocator action in gfu_allocator_default_function"); return nullptr;
         case GFU_ALLOC: return malloc(gfu_cast(usize) size);
         case GFU_REALLOC:
         case GFU_REALLOC2: return realloc(memory, gfu_cast(usize) size);
