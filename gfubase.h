@@ -118,6 +118,12 @@ typedef float f32;
 typedef double f64;
 
 /// ======================================================================= ///
+/// Fancy Utilities                                                         ///
+/// ======================================================================= ///
+
+void gfu_hexdump(const char* data, isize count);
+
+/// ======================================================================= ///
 /// Allocators                                                              ///
 /// ======================================================================= ///
 
@@ -242,6 +248,23 @@ bool gfu_sv_equals(gfu_string_view sv0, gfu_string_view sv1);
 
 #ifdef GFUBASE_IMPLEMENTATION
 #undef GFUBASE_IMPLEMENTATION
+
+/// ======================================================================= ///
+/// Fancy Utilities                                                         ///
+/// ======================================================================= ///
+
+void gfu_hexdump(const char* data, isize count) {
+    fprintf(stderr, "         00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n");
+    for (isize i = 0; i < count / 16; i++) {
+        fprintf(stderr, "%08tX", i * 16);
+        for (isize j = 0; j < 16; j++) {
+            isize index = i * 16 + j;
+            if (index >= count) break;
+            fprintf(stderr, " %02hhX", data[index]);
+        }
+        fprintf(stderr, "\n");
+    }
+}
 
 /// ======================================================================= ///
 /// Allocators                                                              ///
