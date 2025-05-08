@@ -235,6 +235,7 @@ gfu_string_view gfu_sv(const char* cstr, isize length);
 gfu_string_view gfu_string_as_view(gfu_string* str);
 gfu_string_view gfu_cstr_as_view(const char* cstr);
 gfu_string_view gfu_sv_slice(gfu_string_view sv, isize offset, isize length);
+bool gfu_sv_equals(gfu_string_view sv0, gfu_string_view sv1);
 
 #endif /* GFUBASE_H_ */
 
@@ -594,6 +595,19 @@ gfu_string_view gfu_cstr_as_view(const char* cstr) {
 
 gfu_string_view gfu_sv_slice(gfu_string_view sv, isize offset, isize length) {
     return gfu_sv(sv.data + offset, length);
+}
+
+bool gfu_sv_equals(gfu_string_view sv0, gfu_string_view sv1) {
+    if (sv0.count != sv1.count) {
+        return false;
+    }
+
+    for (isize i = 0; i < sv0.count; i++) {
+        if (sv0.data[i] != sv1.data[i])
+            return false;
+    }
+
+    return true;
 }
 
 #endif /* GFUBASE_IMPLEMENTATION */
